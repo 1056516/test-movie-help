@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/0VcbsHp/Screenshot-2024-10-07-8-27-45-PM.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlixiCinema</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0d1b2a; /* Dark blue */
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            z-index: 100;
+            background-color: rgba(13, 27, 42, 0.8); /* Slightly transparent dark blue */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 20px;
+            position: relative;
+            transition: transform 0.3s; /* Smooth transition for scaling */
+            cursor: pointer; /* Make the account image cursor a pointer */
+        }
+
+        .header img:hover {
+            transform: scale(0.95); /* Shrink header logo on hover */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(6, 105, 205, 0.8); /* Light blue background on hover */
+            color: white;
+            outline: 2px solid #0096ff; /* Blue outline on hover */
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            position: relative;
+        }
+
+        .search-bar {
+            padding: 8px;
+            border-radius: 24px;
+            border: 1px solid #444;
+            background-color: #1b2631; /* Darker blue */
+            color: white;
+            width: 200px;
+            transition: width 0.4s ease-in-out;
+        }
+
+        .search-bar:focus {
+            width: 300px;
+            outline: none;
+            border-color: #0096ff; /* Blue border */
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Banner styles */
+        .banner {
+            height: 450px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8) 50%),
+                url('https://images4.alphacoders.com/115/1156779.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            margin-top: 60px;
+            position: relative;
+            transition: transform 0.3s; /* Smooth transition for scaling */
+        }
+
+        /* Banner hover effect */
+        .banner:hover {
+            transform: scale(0.95); /* Shrink banner image */
+        }
+
+        .banner h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .banner-description {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .age-rating {
+            background-color: #0096ff; /* Bright blue */
+            color: white;
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 16px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .play-button {
+            background-color: #0096ff; /* Bright blue */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .play-button:hover {
+            background-color: #0077cc; /* Darker blue */
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 24px;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* Movie Section Styles */
+        .movies {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 20px;
+            scroll-behavior: smooth;
+            padding-bottom: 60px; /* Space for footer */
+        }
+
+        .movie {
+            background-color: #1b2631; /* Darker blue */
+            border-radius: 13px; /* Border radius for Disney+ look */
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 284px; /* Width according to aspect ratio 1.90:1 */
+            height: 150px; /* Height */
+        }
+
+        .movie img {
+            width: 100%; /* Maintain width */
+            height: 100%; /* Full height for the container */
+            object-fit: cover; /* Cover to maintain aspect ratio */
+            border-radius: 13px 13px 0 0; /* Rounded corners for the top */
+            transition: transform 0.3s; /* Smooth transition for scaling */
+        }
+
+        .movie:hover {
+            transform: scale(1.05); /* Enlarges the movie container */
+            box-shadow: 0 0 10px rgba(0, 150, 255, 0.6);
+        }
+
+        .movie:hover img {
+            transform: scale(0.95); /* Shrink image on hover */
+        }
+
+        .movie-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 16px;
+            color: white;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 80%;
+            height: 80%;
+            background-color: #222;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .close-modal,
+        .fullscreen-icon {
+            position: absolute;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            padding: 5px;
+            z-index: 2;
+        }
+
+        .close-modal {
+            top: 10px;
+            left: 10px;
+        }
+
+        .fullscreen-icon {
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
+            background: #141414;
+            padding-top: 60px;
+            z-index: 200;
+            overflow-y: auto;
+            transition: margin-left 0.3s, border 0.3s;
+            border-right: 5px solid transparent;
+        }
+
+        .sidebar.open {
+            border-right: 5px solid #0096ff; /* Bright blue */
+            display: block;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            color: white;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #0096ff; /* Bright blue on hover */
+        }
+
+        /* Login Page Styles */
+        .login-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .login-box input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: white;
+        }
+
+        .login-box button {
+            background-color: #0096ff;
+            color: black;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-box button:hover {
+            background-color: #0077cc;
+        }
+
+        /* Recent Movies Section */
+        .recents {
+            padding: 10px 20px;
+        }
+
+        .recent-movie {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .recent-movie img {
+            width: 150px;
+            height: 100px;
+            border-radius: 10px;
+        }
+
+        .remove-from-recents {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: red;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .movies {
+                padding: 5px;
+            }
+
+            .play-button {
+                padding: 8px 10px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .search-bar {
+                width: 150px; /* Minimum width for smaller screens */
+            }
+
+            .movie img {
+                height: 100%; /* Adjust height for mobile if necessary */
+            }
+        }
+
+        /* Water outline effect keyframes */
+        @keyframes wave-outer {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.5;
+            }
+
+            25% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(0.95);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header" id="header">
+        <img src="https://i.ibb.co/JjX1DXL/FLIXNET.png" alt="Logo" />
+        <div class="nav-links">
+            <a href="#" onclick="loadPage('home')">Home</a>
+            <a href="#tv-shows" onclick="loadPage('tv-shows')">TV Shows</a>
+            <a href="#movies" onclick="loadPage('movies')">Movies</a>
+            <a href="#my-list" onclick="loadPage('my-list')">My List</a>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-bar" id="searchBar" oninput="filterMovies()" placeholder="Search for movies...">
+            <i class="fas fa-search search-icon" onclick="toggleSearch()"></i>
+        </div>
+        <div class="play-button" onclick="playFeaturedMovie()">
+            <i class="fas fa-play"></i> Play Deadpool 2
+        </div>
+        <div class="hamburger" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <img src="https://via.placeholder.com/40" alt="Account" id="accountImg" onclick="openLoginPage()" />
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div id="accountInfo"></div>
+        <a href="#recents" id="recentsLink" style="display: none;" onclick="showRecents()">Recents</a>
+        <button id="logoutButton" style="display: none;" onclick="logout()">Log Out</button>
+    </div>
+
+    <div class="banner">
+        <h1>Deadpool 2</h1>
+        <p class="banner-description">
+            Foul-mouthed mutant mercenary Wade Wilson (a.k.a. Deadpool) assembles a team of fellow mutant rogues to protect a young boy with abilities from the brutal, time-traveling cyborg Cable.
+        </p>
+        <div class="age-rating">PG-13</div>
+    </div>
+
+    <h2 class="section-title">Staff Picks</h2>
+    <div class="movies" id="moviesContainer1">
+        <div class="movie" data-url="https://drive.google.com/file/d/1W0OfyIS_7f0DKjC6x1bVLI4WBFabZXis/preview">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ801LnceBZ8ENO04SW7GvgzzWAw0tRtqjcrtQ6sdS1mLd1uoE" alt="Garfield Movie" />
+            <div class="movie-title">Garfield Movie</div>
+        </div>
+        <div class="movie" data-url="https://drive.google.com/file/d/1EsX8k7nfYQrzC6apqJqnyfH7HLAHl31G/preview">
+            <img src="https://scera.org/wp-content/uploads/2017/03/disney-moana-movie-poster-wallpaper-6677.jpg" alt="Moana" />
+            <div class="movie-title">Moana</div>
+        </div>
+        <div class="movie" data-url="https://drive.google.com/file/d/1WnfCHnjlcN7joibU1e0RieYJNFBPgXRn/preview">
+            <img src="https://imageio.forbes.com/specials-images/imageserve/66d7eba17b9960b8708c5da6/-Beetlejuice-Beetlejuice--partial-poster-/0x0.jpg?format=jpg&crop=1773,998,x0,y215,safe&width=960" alt="Beetle Juice Beetle Juice" />
+            <div class="movie-title">Beetle Juice Beetle Juice</div>
+        </div>
+        <div class="movie" data-url="https://drive.google.com/file/d/1GEqoG7q-tEz_pOpPqOWe_cnSczCxV9PW/preview">
+            <img src="https://sportshub.cbsistatic.com/i/2023/12/13/4da0a921-d6db-424c-926c-df03c9b864d7/ryan-reynolds-john-krasinski-if-poster-header.jpg" alt="IF" />
+            <div class="movie-title">IF</div>
+        </div>
+        <div class="movie" data-url="https://drive.google.com/file/d/1XkYunzvu-s28Ttc90NesKwdbloUUWnYv/preview">
+            <img src="https://www.joblo.com/wp-content/uploads/2023/11/imaginary-blumhouse-1280x720.jpg" alt="Imaginary" />
+            <div class="movie-title">Imaginary</div>
+        </div>
+        <div class="movie" data-url="https://drive.google.com/file/d/1W60OfyIS_7f0DKjC6x1bVLI4WBFabZXis/preview">
+            <img src="https:// PlacetoImageLink.com/image6.jpg" alt="Movie 6" />
+            <div class="movie-title">Movie 6</div>
+        </div>
+    </div>
+
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </span>
+            <span class="fullscreen-icon" id="fullscreenIcon" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+            </span>
+            <iframe id="movieEmbed" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div class="login-page" id="loginPage">
+        <div class="login-box">
+            <h2 id="loginTitle" style="color: white;">LOG IN</h2>
+            <input type="email" id="emailInput" placeholder="Enter your email" />
+            <button id="loginButton" onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <div class="recents" id="recentsContainer" style="display:none;">
+        <h2>Recents</h2>
+        <div id="recentsList"></div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const searchBar = document.getElementById('searchBar');
+        const header = document.getElementById('header');
+        const movieEmbed = document.getElementById('movieEmbed');
+        const modal = document.getElementById('movieModal');
+        const fullscreenIcon = document.getElementById('fullscreenIcon');
+        const loginPage = document.getElementById('loginPage');
+        const recentsContainer = document.getElementById('recentsContainer');
+        const recentsList = document.getElementById('recentsList');
+        let isFullscreen = false; // Track fullscreen state
+        let loggedIn = false; // Track login state
+        let accountInfo = {}; // Store account information
+
+        // Load page function (dummy for now)
+        function loadPage(page) {
+            alert("Loading " + page + "...");
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebar.style.display = sidebar.style.display === "block" ? "none" : "block";
+            document.body.style.marginLeft = sidebar.style.display === "none" ? "0" : "250px";
+            displayAccountInfo(); // Display account info if logged in
+            updateRecents(); // Check recent movies
+        }
+
+        function toggleSearch() {
+            searchBar.focus();
+        }
+
+        function openLoginPage() {
+            loginPage.style.display = 'flex'; // Show login modal
+        }
+
+        function login() {
+            const email = document.getElementById('emailInput').value;
+            if (email) {
+                accountInfo.email = email;
+                loggedIn = true;
+                localStorage.setItem('accountInfo', JSON.stringify(accountInfo)); // Save account info
+                alert('Logged in successfully!');
+                loginPage.style.display = 'none'; // Hide login page
+                displayAccountInfo(); // Update the sidebar with account info
+                updateRecents(); // Load recents
+            } else {
+                alert('Please enter a valid email.');
+            }
+        }
+
+        function displayAccountInfo() {
+            if (loggedIn) {
+                const accountInfo = JSON.parse(localStorage.getItem('accountInfo'));
+                document.getElementById('accountInfo').innerHTML = `
+                    <p>Logged in as: ${accountInfo.email}</p>
+                `;
+                document.getElementById('recentsLink').style.display = 'block';
+                document.getElementById('logoutButton').style.display = 'block';
+                recentsContainer.style.display = 'none'; // Hide recents when logged in
+            } else {
+                document.getElementById('accountInfo').innerHTML = '';
+                document.getElementById('recentsLink').style.display = 'none';
+                document.getElementById('logoutButton').style.display = 'none';
+                recentsContainer.style.display = 'none'; // Hide recents when logged out
+            }
+        }
+
+        function logout() {
+            loggedIn = false;
+            localStorage.removeItem('accountInfo'); // Clear account info from storage
+            alert('Logged out successfully!');
+            displayAccountInfo(); // Update the sidebar
+        }
+
+        function playFeaturedMovie() {
+            const url = 'https://drive.google.com/file/d/1byr1rz9UkYusbAWUfuDcSHhmDUEHSGCI/preview';
+            movieEmbed.src = url;
+            modal.style.display = 'flex'; // Show modal
+            isFullscreen = false; // Reset fullscreen state
+            fullscreenIcon.innerHTML = '<i class="fas fa-expand"></i>'; // Reset icon
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            movieEmbed.src = ''; // Reset iframe src
+            exitFullscreen(); // Exit fullscreen if in fullscreen mode
+        }
+
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                if (modal.requestFullscreen) {
+                    modal.requestFullscreen();
+                } else if (modal.mozRequestFullScreen) { // Firefox
+                    modal.mozRequestFullScreen();
+                } else if (modal.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                    modal.webkitRequestFullscreen();
+                } else if (modal.msRequestFullscreen) { // IE/Edge
+                    modal.msRequestFullscreen();
+                }
+                isFullscreen = true; // Set state to fullscreen
+                fullscreenIcon.innerHTML = '<i class="fas fa-compress"></i>'; // Change icon
+                document.body.style.overflow = 'hidden'; // Prevent scrolling while in fullscreen
+            } else {
+                exitFullscreen();
+            }
+        }
+
+        function exitFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            isFullscreen = false; // Reset state
+            fullscreenIcon.innerHTML = '<i class="fas fa-expand"></i>'; // Reset icon
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        document.querySelectorAll('.movie').forEach(movie => {
+            movie.addEventListener('click', () => {
+                const url = movie.getAttribute('data-url');
+                movieEmbed.src = url;
+                modal.style.display = 'flex'; // Show modal
+                isFullscreen = false; // Reset fullscreen state
+                fullscreenIcon.innerHTML = '<i class="fas fa-expand"></i>'; // Reset icon
+                
+                // Save recent movie to local storage when ALT + R is pressed
+                window.addEventListener('keydown', function (event) {
+                    if (event.altKey && event.key === 'r') {
+                        saveRecentMovie(movie);
+                    }
+                });
+            });
+        });
+
+        function saveRecentMovie(movie) {
+            if (!loggedIn) {
+                alert('Please log in to save movies to recents.');
+                return;
+            }
+            const recents = JSON.parse(localStorage.getItem('recents')) || [];
+            const title = movie.querySelector('.movie-title').innerText;
+            const url = movie.getAttribute('data-url');
+            const existing = recents.find(item => item.title === title); // Check if it's already saved
+
+            if (!existing) {
+                const recentMovie = { title, url };
+                recents.push(recentMovie);
+                localStorage.setItem('recents', JSON.stringify(recents)); // Save recents
+                alert('Movie saved to recents!');
+            } else {
+                alert('This movie is already in your recents.');
+            }
+            updateRecents(); // Update the displayed recents
+        }
+
+        function updateRecents() {
+            const recents = JSON.parse(localStorage.getItem('recents')) || [];
+            recentsList.innerHTML = '';
+            recents.forEach(item => {
+                recentsList.innerHTML += `
+                    <div class="recent-movie">
+                        <img src="${item.url}" alt="${item.title}" />
+                        <div class="remove-from-recents" onclick="removeFromRecents('${item.title}')">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                `;
+            });
+            recentsContainer.style.display = recents.length ? 'block' : 'none'; // Show or hide recents
+        }
+
+        function removeFromRecents(title) {
+            let recents = JSON.parse(localStorage.getItem('recents')) || [];
+            recents = recents.filter(item => item.title !== title);
+            localStorage.setItem('recents', JSON.stringify(recents)); // Save updated recents
+            updateRecents(); // Refresh the displayed recents
+        }
+
+        function filterMovies() {
+            const query = searchBar.value.toLowerCase();
+            const movies = document.querySelectorAll('.movie');
+            movies.forEach(movie => {
+                const title = movie.querySelector('.movie-title').innerText.toLowerCase();
+                movie.style.display = title.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        window.onload = function () {
+            // Check local storage for login info
+            const storedAccountInfo = localStorage.getItem('accountInfo');
+            if (storedAccountInfo) {
+                accountInfo = JSON.parse(storedAccountInfo);
+                loggedIn = true;
+            }
+            displayAccountInfo(); // Show account info on load
+            updateRecents(); // Show recents on load
+        };
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        };
+
+        function showRecents() {
+            updateRecents(); // Ensure recent movies are updated
+            recentsContainer.style.display = 'block'; // Show recent movies
+        }
+    </script>
+</body>
+
+</html>
